@@ -1,0 +1,17 @@
+namespace go web
+with_client=true
+
+struct Order
+{
+  i64 id,
+  string name (json="Name",valid="regx:^a$"),
+  list<string> children
+}
+
+service OrderService url="/base"
+{
+    #POST url="order" string  testOrder(list<struct Order> orderList) not_login,
+    #GET url="test" list<struct Order> testString(struct User user)
+
+    GET url="test" list<struct Order> testString2(list<i64> idList)
+}
