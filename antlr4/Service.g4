@@ -75,7 +75,11 @@ struct_type_list
 
 get_param_
     : single_struct_param
-    | simple_param_+
+    | simple_param_ next_simple_param_*
+    ;
+
+next_simple_param_
+    : ',' simple_param_
     ;
 
 real_base_type_list_
@@ -193,7 +197,7 @@ list_separator
     ;
 
 real_base_type
-    :  TYPE_BOOL | TYPE_BYTE | TYPE_I16 | TYPE_I32 | TYPE_I64 | TYPE_DOUBLE | TYPE_STRING | TYPE_BINARY
+    :  TYPE_BOOL | TYPE_BYTE | TYPE_I16 | TYPE_I32 | TYPE_I64 | TYPE_DOUBLE | TYPE_STRING
     ;
 
 map_key_type
@@ -207,7 +211,7 @@ TYPE_I32: 'i32';
 TYPE_I64: 'i64';
 TYPE_DOUBLE: 'double';
 TYPE_STRING: 'string';
-TYPE_BINARY: 'binary';
+//TYPE_BINARY: 'binary';
 
 LITERAL
     : '"' ( ESC_SEQ | ~[\\"] )* '"'

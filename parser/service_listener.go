@@ -56,6 +56,9 @@ type ServiceListener interface {
 	// EnterGet_param_ is called when entering the get_param_ production.
 	EnterGet_param_(c *Get_param_Context)
 
+	// EnterNext_simple_param_ is called when entering the next_simple_param_ production.
+	EnterNext_simple_param_(c *Next_simple_param_Context)
+
 	// EnterReal_base_type_list_ is called when entering the real_base_type_list_ production.
 	EnterReal_base_type_list_(c *Real_base_type_list_Context)
 
@@ -184,6 +187,9 @@ type ServiceListener interface {
 
 	// ExitGet_param_ is called when exiting the get_param_ production.
 	ExitGet_param_(c *Get_param_Context)
+
+	// ExitNext_simple_param_ is called when exiting the next_simple_param_ production.
+	ExitNext_simple_param_(c *Next_simple_param_Context)
 
 	// ExitReal_base_type_list_ is called when exiting the real_base_type_list_ production.
 	ExitReal_base_type_list_(c *Real_base_type_list_Context)

@@ -100,32 +100,48 @@ func createSvcGet(ctx parser.IGet_Context) (*GetMethod, error) {
 		g.Params.StructParamName = ctx.Get_param_().Single_struct_param().IDENTIFIER().GetText()
 		return g, nil
 	}
-	if ctx.Get_param_().AllSimple_param_() == nil {
+	if ctx.Get_param_().Simple_param_() == nil {
 		return nil, errors.New("invalid parse in " + g.Name + ":" + ctx.Get_param_().GetText())
 	}
-	for _, simpleCtx := range ctx.Get_param_().AllSimple_param_() {
-		bp := &BasicGetParam{}
+	curCtx := ctx.Get_param_().Simple_param_()
+	ctxName := g.Name + ":" + curCtx.GetText()
+
+	bp, err := createBasicGetParam(ctxName, ctx.Get_param_().Simple_param_().Real_base_type_parm(), ctx.Get_param_().Simple_param_().Real_base_type_list_parm())
+	if err != nil {
+		return nil, err
+	}
+	g.Params.addBasicParams(bp)
+	for _, simpleCtx := range ctx.Get_param_().AllNext_simple_param_() {
+		ctxName = g.Name + ":" + simpleCtx.GetText()
+		bp, err = createBasicGetParam(ctxName, simpleCtx.Simple_param_().Real_base_type_parm(), simpleCtx.Simple_param_().Real_base_type_list_parm())
+		if err != nil {
+			return nil, err
+		}
 		g.Params.addBasicParams(bp)
-		if simpleCtx.Real_base_type_parm() != nil {
-			bp.IsList = false
-			bp.TypeName = simpleCtx.Real_base_type_parm().Real_base_type().GetText()
-			bp.ParamName = simpleCtx.Real_base_type_parm().IDENTIFIER().GetText()
-			continue
-		}
-		if simpleCtx.Real_base_type_list_parm() != nil {
-			baseType := simpleCtx.Real_base_type_list_parm().Real_base_type_list_().Real_base_type()
-			if baseType.TYPE_I16() == nil && baseType.TYPE_BYTE() == nil && baseType.TYPE_I32() == nil && baseType.TYPE_I64() == nil && baseType.TYPE_STRING() == nil {
-				return nil, errors.New("get list param must be int or string in " + g.Name + ":" + simpleCtx.GetText())
-			}
-			bp.IsList = true
-			bp.ParamName = simpleCtx.Real_base_type_list_parm().IDENTIFIER().GetText()
-			bp.TypeName = simpleCtx.Real_base_type_list_parm().Real_base_type_list_().Real_base_type().GetText()
-			continue
-		}
-		return nil, errors.New("invalid parse in " + g.Name + ":" + simpleCtx.GetText())
 	}
 
 	return g, nil
+}
+
+func createBasicGetParam(ctxName string, realParam parser.IReal_base_type_parmContext, realParamList parser.IReal_base_type_list_parmContext) (*BasicGetParam, error) {
+	bp := &BasicGetParam{}
+	if realParam != nil {
+		bp.IsList = false
+		bp.TypeName = realParam.Real_base_type().GetText()
+		bp.ParamName = realParam.IDENTIFIER().GetText()
+		return bp, nil
+	}
+	if realParamList != nil {
+		baseType := realParamList.Real_base_type_list_().Real_base_type()
+		if baseType.TYPE_I16() == nil && baseType.TYPE_BYTE() == nil && baseType.TYPE_I32() == nil && baseType.TYPE_I64() == nil && baseType.TYPE_STRING() == nil {
+			return nil, errors.New("get list param must be int or string in " + ctxName)
+		}
+		bp.IsList = true
+		bp.ParamName = realParamList.IDENTIFIER().GetText()
+		bp.TypeName = realParamList.Real_base_type_list_().Real_base_type().GetText()
+		return bp, nil
+	}
+	return nil, errors.New("get params must be basic type or list in " + ctxName)
 }
 
 func createSvcPost(ctx parser.IPost_Context) (*PostMethod, error) {

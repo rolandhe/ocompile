@@ -117,6 +117,12 @@ func (s *BaseServiceListener) EnterGet_param_(ctx *Get_param_Context) {}
 // ExitGet_param_ is called when production get_param_ is exited.
 func (s *BaseServiceListener) ExitGet_param_(ctx *Get_param_Context) {}
 
+// EnterNext_simple_param_ is called when production next_simple_param_ is entered.
+func (s *BaseServiceListener) EnterNext_simple_param_(ctx *Next_simple_param_Context) {}
+
+// ExitNext_simple_param_ is called when production next_simple_param_ is exited.
+func (s *BaseServiceListener) ExitNext_simple_param_(ctx *Next_simple_param_Context) {}
+
 // EnterReal_base_type_list_ is called when production real_base_type_list_ is entered.
 func (s *BaseServiceListener) EnterReal_base_type_list_(ctx *Real_base_type_list_Context) {}
 
