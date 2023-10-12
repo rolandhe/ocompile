@@ -4,8 +4,8 @@ type Definition struct {
 	Namespace  string
 	WithClient bool
 	Structs    []*StructDefine
-	Services   []*ServiceDefine
-	Err        error
+	Services []*ServiceDefine
+	err      error
 }
 
 func (def *Definition) addStruct(st *StructDefine) {

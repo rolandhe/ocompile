@@ -2,22 +2,41 @@ package transfer
 
 import (
 	"errors"
+	"github.com/antlr4-go/antlr/v4"
 	"github.com/rolandhe/ocompile/parser"
+	"strconv"
 	"strings"
 )
 
-type WalkListener struct {
+type walkListener struct {
 	*parser.BaseServiceListener
 	def *Definition
 }
 
-func NewWalkListener(def *Definition) *WalkListener {
-	return &WalkListener{
+type acceptErrorListener struct {
+	*antlr.DefaultErrorListener
+	def *Definition
+}
+
+func (ae *acceptErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, line, column int, msg string, _ antlr.RecognitionException) {
+	errMessage := "line " + strconv.Itoa(line) + ":" + strconv.Itoa(column) + " " + msg
+	ae.def.err = errors.New(errMessage)
+}
+
+func newAcceptErrorListener(def *Definition) antlr.ErrorListener {
+	return &acceptErrorListener{
+		DefaultErrorListener: new(antlr.DefaultErrorListener),
+		def:                  def,
+	}
+}
+
+func newWalkListener(def *Definition) antlr.ParseTreeListener {
+	return &walkListener{
 		def: def,
 	}
 }
 
-func (this *WalkListener) EnterNamespace_(ctx *parser.Namespace_Context) {
+func (this *walkListener) EnterNamespace_(ctx *parser.Namespace_Context) {
 	if ctx.LITERAL() != nil {
 		this.def.Namespace = trimDoubleQuote(ctx.LITERAL().GetText())
 		return
@@ -25,14 +44,14 @@ func (this *WalkListener) EnterNamespace_(ctx *parser.Namespace_Context) {
 	this.def.Namespace = ctx.IDENTIFIER(1).GetText()
 }
 
-func (this *WalkListener) EnterWith_client_optional(ctx *parser.With_client_optionalContext) {
+func (this *walkListener) EnterWith_client_optional(ctx *parser.With_client_optionalContext) {
 	if ctx.GetText() == "true" {
 		this.def.WithClient = true
 	}
 }
 
-func (this *WalkListener) EnterStruct_(ctx *parser.Struct_Context) {
-	if this.def.Err != nil {
+func (this *walkListener) EnterStruct_(ctx *parser.Struct_Context) {
+	if this.def.err != nil {
 		return
 	}
 	st := &StructDefine{
@@ -45,8 +64,8 @@ func (this *WalkListener) EnterStruct_(ctx *parser.Struct_Context) {
 	this.def.addStruct(st)
 }
 
-func (this *WalkListener) EnterService(ctx *parser.ServiceContext) {
-	if this.def.Err != nil {
+func (this *walkListener) EnterService(ctx *parser.ServiceContext) {
+	if this.def.err != nil {
 		return
 	}
 	svc := &ServiceDefine{
@@ -59,7 +78,7 @@ func (this *WalkListener) EnterService(ctx *parser.ServiceContext) {
 		if m.Get_() != nil {
 			g, err := createSvcGet(m.Get_())
 			if err != nil {
-				this.def.Err = err
+				this.def.err = err
 				return
 			}
 			svc.addGet(g)
@@ -68,13 +87,13 @@ func (this *WalkListener) EnterService(ctx *parser.ServiceContext) {
 		if m.Post_() != nil {
 			p, err := createSvcPost(m.Post_())
 			if err != nil {
-				this.def.Err = err
+				this.def.err = err
 				return
 			}
 			svc.addPost(p)
 			continue
 		}
-		this.def.Err = errors.New("invalid method in service:" + svc.Name + "," + m.GetText())
+		this.def.err = errors.New("invalid method in service:" + svc.Name + "," + m.GetText())
 		return
 	}
 
