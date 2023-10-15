@@ -110,6 +110,7 @@ func (gp *GetParam) addBasicParams(bp *BasicGetParam) {
 }
 
 type BasicGetParam struct {
+	ReqDefine   string
 	IsList    bool
 	TypeName  string
 	ParamName string

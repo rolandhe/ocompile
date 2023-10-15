@@ -98,8 +98,8 @@ single_struct_param
    ;
 
 simple_param_
-    : real_base_type_parm
-    | real_base_type_list_parm
+    : field_req? real_base_type_parm
+    | field_req? real_base_type_list_parm
     ;
 real_base_type_parm
     : real_base_type IDENTIFIER

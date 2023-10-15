@@ -14,5 +14,5 @@ service OrderService url="/base"
     #GET url="test" list<struct Order> testString(struct User user),
 
     #GET url="test" list<struct Order> testString2(list<i64> idList),
-    GET url="test" list<struct Order> testString2(i64 id,string nn,i32 status)
+    GET url="test" list<struct Order> testString2(required i64 id,optional string nn,i32 status)
 }

@@ -125,14 +125,14 @@ func createSvcGet(ctx parser.IGet_Context) (*GetMethod, error) {
 	curCtx := ctx.Get_param_().Simple_param_()
 	ctxName := g.Name + ":" + curCtx.GetText()
 
-	bp, err := createBasicGetParam(ctxName, ctx.Get_param_().Simple_param_().Real_base_type_parm(), ctx.Get_param_().Simple_param_().Real_base_type_list_parm())
+	bp, err := createBasicGetParam(ctxName, ctx.Get_param_().Simple_param_().Field_req(), ctx.Get_param_().Simple_param_().Real_base_type_parm(), ctx.Get_param_().Simple_param_().Real_base_type_list_parm())
 	if err != nil {
 		return nil, err
 	}
 	g.Params.addBasicParams(bp)
 	for _, simpleCtx := range ctx.Get_param_().AllNext_simple_param_() {
 		ctxName = g.Name + ":" + simpleCtx.GetText()
-		bp, err = createBasicGetParam(ctxName, simpleCtx.Simple_param_().Real_base_type_parm(), simpleCtx.Simple_param_().Real_base_type_list_parm())
+		bp, err = createBasicGetParam(ctxName, simpleCtx.Simple_param_().Field_req(), simpleCtx.Simple_param_().Real_base_type_parm(), simpleCtx.Simple_param_().Real_base_type_list_parm())
 		if err != nil {
 			return nil, err
 		}
@@ -142,8 +142,11 @@ func createSvcGet(ctx parser.IGet_Context) (*GetMethod, error) {
 	return g, nil
 }
 
-func createBasicGetParam(ctxName string, realParam parser.IReal_base_type_parmContext, realParamList parser.IReal_base_type_list_parmContext) (*BasicGetParam, error) {
+func createBasicGetParam(ctxName string, fieldRep parser.IField_reqContext, realParam parser.IReal_base_type_parmContext, realParamList parser.IReal_base_type_list_parmContext) (*BasicGetParam, error) {
 	bp := &BasicGetParam{}
+	if fieldRep != nil {
+		bp.ReqDefine = fieldRep.GetText()
+	}
 	if realParam != nil {
 		bp.IsList = false
 		bp.TypeName = realParam.Real_base_type().GetText()
