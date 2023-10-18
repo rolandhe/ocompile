@@ -2,10 +2,11 @@ package transfer
 
 type Definition struct {
 	Namespace  string
+	GoImports  []string
 	WithClient bool
 	Structs    []*StructDefine
-	Services []*ServiceDefine
-	err      error
+	Services   []*ServiceDefine
+	err        error
 }
 
 func (def *Definition) addStruct(st *StructDefine) {
@@ -67,9 +68,10 @@ func (svc *ServiceDefine) addPost(p *PostMethod) {
 }
 
 type BaseMethod struct {
-	Name     string
-	Url      string
-	NotLogin bool
+	Name        string
+	Url         string
+	NotLogin    bool
+	Description string
 	MethodReturnType
 }
 
@@ -110,7 +112,7 @@ func (gp *GetParam) addBasicParams(bp *BasicGetParam) {
 }
 
 type BasicGetParam struct {
-	ReqDefine   string
+	ReqDefine string
 	IsList    bool
 	TypeName  string
 	ParamName string

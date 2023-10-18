@@ -6,6 +6,7 @@ document
 
 header
     : namespace_
+    | golang_import_
     | 'with_client' '=' with_client_optional
     ;
 
@@ -13,6 +14,11 @@ header
 namespace_
     : 'namespace' IDENTIFIER (IDENTIFIER | LITERAL)
     ;
+
+golang_import_
+    : 'go_import' IDENTIFIER? LITERAL
+    ;
+
 
 
 with_client_optional
@@ -34,6 +40,7 @@ service
     : 'service' IDENTIFIER url_? '{' method_* '}' type_annotations?
     ;
 
+
 field
     : field_req? field_type IDENTIFIER field_annotations? list_separator?
     ;
@@ -50,11 +57,11 @@ method_
     ;
 
 post_
-    : 'POST' url_ method_type IDENTIFIER '(' method_param_? ')' not_login? type_annotations? list_separator?
+    : method_description? 'POST' url_ method_type IDENTIFIER '(' method_param_? ')' not_login?  list_separator?
     ;
 
 get_
-    : 'GET' url_ method_type IDENTIFIER '(' get_param_? ')' not_login? type_annotations? list_separator?
+    : method_description? 'GET' url_ method_type IDENTIFIER '(' get_param_? ')' not_login?  list_separator?
     ;
 
 url_
@@ -113,6 +120,13 @@ not_login
     : 'not_login'
     ;
 
+method_description
+   : '(' 'description' '=' method_description_content  ')'
+   ;
+
+method_description_content
+  : annotation_value*
+  ;
 
 type_annotations
     : '(' type_annotation* ')'
@@ -224,6 +238,7 @@ fragment ESC_SEQ : '\\' [rnt"'\\] ;
 IDENTIFIER
     : (LETTER | '_') (LETTER | DIGIT | '.' | '_')*
     ;
+
 
 COMMA
     : ','

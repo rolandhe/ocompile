@@ -2,6 +2,7 @@ package transfer
 
 import (
 	"errors"
+	"fmt"
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/rolandhe/ocompile/parser"
 	"strconv"
@@ -42,6 +43,17 @@ func (this *walkListener) EnterNamespace_(ctx *parser.Namespace_Context) {
 		return
 	}
 	this.def.Namespace = ctx.IDENTIFIER(1).GetText()
+}
+
+func (this *walkListener) EnterGolang_import_(ctx *parser.Golang_import_Context) {
+	aliasNode := ctx.IDENTIFIER()
+	if aliasNode != nil {
+		line := fmt.Sprintf("import %s %s", aliasNode.GetText(), ctx.LITERAL().GetText())
+		this.def.GoImports = append(this.def.GoImports, line)
+	} else {
+		line := fmt.Sprintf("import %s", ctx.LITERAL().GetText())
+		this.def.GoImports = append(this.def.GoImports, line)
+	}
 }
 
 func (this *walkListener) EnterWith_client_optional(ctx *parser.With_client_optionalContext) {
@@ -109,6 +121,14 @@ func createSvcGet(ctx parser.IGet_Context) (*GetMethod, error) {
 	}
 	procMethodType(&g.BaseMethod, ctx.Method_type())
 
+	descCtx := ctx.Method_description()
+	if descCtx != nil {
+		desciption := descCtx.Method_description_content().GetText()
+		trimed := trimDoubleQuote(desciption)
+		if len(trimed) > 0 {
+			g.Description = trimed
+		}
+	}
 	if ctx.Get_param_() == nil {
 		g.Params.IsEmpty = true
 		return g, nil
@@ -167,6 +187,7 @@ func createBasicGetParam(ctxName string, fieldRep parser.IField_reqContext, real
 }
 
 func createSvcPost(ctx parser.IPost_Context) (*PostMethod, error) {
+
 	p := &PostMethod{}
 	p.Name = ctx.IDENTIFIER().GetText()
 	p.Url = trimDoubleQuote(ctx.Url_().LITERAL().GetText())
@@ -174,6 +195,16 @@ func createSvcPost(ctx parser.IPost_Context) (*PostMethod, error) {
 		p.NotLogin = true
 	}
 	procMethodType(&p.BaseMethod, ctx.Method_type())
+
+	descCtx := ctx.Method_description()
+	if descCtx != nil {
+		desciption := descCtx.Method_description_content().GetText()
+		trimed := trimDoubleQuote(desciption)
+		if len(trimed) > 0 {
+			p.Description = trimed
+		}
+	}
+
 	if ctx.Method_param_() == nil {
 		p.Params.IsEmpty = true
 		return p, nil

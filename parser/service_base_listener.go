@@ -39,6 +39,12 @@ func (s *BaseServiceListener) EnterNamespace_(ctx *Namespace_Context) {}
 // ExitNamespace_ is called when production namespace_ is exited.
 func (s *BaseServiceListener) ExitNamespace_(ctx *Namespace_Context) {}
 
+// EnterGolang_import_ is called when production golang_import_ is entered.
+func (s *BaseServiceListener) EnterGolang_import_(ctx *Golang_import_Context) {}
+
+// ExitGolang_import_ is called when production golang_import_ is exited.
+func (s *BaseServiceListener) ExitGolang_import_(ctx *Golang_import_Context) {}
+
 // EnterWith_client_optional is called when production with_client_optional is entered.
 func (s *BaseServiceListener) EnterWith_client_optional(ctx *With_client_optionalContext) {}
 
@@ -170,6 +176,20 @@ func (s *BaseServiceListener) EnterNot_login(ctx *Not_loginContext) {}
 
 // ExitNot_login is called when production not_login is exited.
 func (s *BaseServiceListener) ExitNot_login(ctx *Not_loginContext) {}
+
+// EnterMethod_description is called when production method_description is entered.
+func (s *BaseServiceListener) EnterMethod_description(ctx *Method_descriptionContext) {}
+
+// ExitMethod_description is called when production method_description is exited.
+func (s *BaseServiceListener) ExitMethod_description(ctx *Method_descriptionContext) {}
+
+// EnterMethod_description_content is called when production method_description_content is entered.
+func (s *BaseServiceListener) EnterMethod_description_content(ctx *Method_description_contentContext) {
+}
+
+// ExitMethod_description_content is called when production method_description_content is exited.
+func (s *BaseServiceListener) ExitMethod_description_content(ctx *Method_description_contentContext) {
+}
 
 // EnterType_annotations is called when production type_annotations is entered.
 func (s *BaseServiceListener) EnterType_annotations(ctx *Type_annotationsContext) {}

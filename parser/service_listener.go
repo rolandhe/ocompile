@@ -17,6 +17,9 @@ type ServiceListener interface {
 	// EnterNamespace_ is called when entering the namespace_ production.
 	EnterNamespace_(c *Namespace_Context)
 
+	// EnterGolang_import_ is called when entering the golang_import_ production.
+	EnterGolang_import_(c *Golang_import_Context)
+
 	// EnterWith_client_optional is called when entering the with_client_optional production.
 	EnterWith_client_optional(c *With_client_optionalContext)
 
@@ -82,6 +85,12 @@ type ServiceListener interface {
 
 	// EnterNot_login is called when entering the not_login production.
 	EnterNot_login(c *Not_loginContext)
+
+	// EnterMethod_description is called when entering the method_description production.
+	EnterMethod_description(c *Method_descriptionContext)
+
+	// EnterMethod_description_content is called when entering the method_description_content production.
+	EnterMethod_description_content(c *Method_description_contentContext)
 
 	// EnterType_annotations is called when entering the type_annotations production.
 	EnterType_annotations(c *Type_annotationsContext)
@@ -149,6 +158,9 @@ type ServiceListener interface {
 	// ExitNamespace_ is called when exiting the namespace_ production.
 	ExitNamespace_(c *Namespace_Context)
 
+	// ExitGolang_import_ is called when exiting the golang_import_ production.
+	ExitGolang_import_(c *Golang_import_Context)
+
 	// ExitWith_client_optional is called when exiting the with_client_optional production.
 	ExitWith_client_optional(c *With_client_optionalContext)
 
@@ -214,6 +226,12 @@ type ServiceListener interface {
 
 	// ExitNot_login is called when exiting the not_login production.
 	ExitNot_login(c *Not_loginContext)
+
+	// ExitMethod_description is called when exiting the method_description production.
+	ExitMethod_description(c *Method_descriptionContext)
+
+	// ExitMethod_description_content is called when exiting the method_description_content production.
+	ExitMethod_description_content(c *Method_description_contentContext)
 
 	// ExitType_annotations is called when exiting the type_annotations production.
 	ExitType_annotations(c *Type_annotationsContext)
